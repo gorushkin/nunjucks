@@ -3,11 +3,22 @@ import njkRender from 'gulp-nunjucks-render';
 import data from 'gulp-data';
 import fs from 'fs';
 import del from 'del';
-const pageData = fs.readFileSync('./src/data.json', 'utf-8');
+import path from 'path';
+
+const paths = {
+  getDir: () => path.resolve(),
+  getPathToData: () => './src/data/',
+  getPathToTemplate: () => './src/templates/',
+  getDataFileName: () => 'data.json',
+}
+
+const getPath = (filePath, fileName) => path.join(filePath, fileName);
+const dataPath = getPath(paths.getPathToData(), paths.getDataFileName());
+const pageData = fs.readFileSync(dataPath, 'utf-8');
 
 const render = () => {
   return gulp
-    .src('./src/templates/*')
+    .src(`${paths.getPathToTemplate()}*.html`)
     .pipe(data(() => JSON.parse(pageData)))
     .pipe(
       njkRender({
